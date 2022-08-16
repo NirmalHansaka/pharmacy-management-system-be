@@ -4,10 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 
 @Data
 @AllArgsConstructor
@@ -18,5 +16,30 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
-    private String user;
+
+    @NotNull
+    private String username;
+
+    @NotNull
+    @Column(columnDefinition = "MEDIUMTEXT")
+    private String password;
+
+    @NotNull
+    private String firstName;
+
+    @NotNull
+    private String lastName;
+
+    @NotNull
+    private String nic;
+
+    @NotNull
+    private String phoneNumber;
+
+    @ManyToOne
+    @JoinColumn(name="role_id", nullable=false)
+    private Role role;
+
+    private boolean isActive = true;
+    private boolean deleted = false;
 }
