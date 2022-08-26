@@ -36,7 +36,7 @@ public class User {
     @NotNull
     private String phoneNumber;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name="role_id", nullable=false)
     private Role role;
 
