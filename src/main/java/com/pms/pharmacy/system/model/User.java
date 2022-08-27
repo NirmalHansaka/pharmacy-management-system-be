@@ -40,6 +40,6 @@ public class User {
     @JoinColumn(name="role_id", nullable=false)
     private Role role;
 
-    private boolean isActive = true;
-    private boolean deleted = false;
+    private final boolean isActive = true;
+    private final boolean deleted = false;
 }
