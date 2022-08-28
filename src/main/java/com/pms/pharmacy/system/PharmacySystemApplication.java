@@ -29,8 +29,8 @@ public class PharmacySystemApplication {
         return args -> {
             List<User> users = userService.getUsers();
             if(users.size() == 0){
-                Role admin = userService.saveRole(new Role(null, "ROLE_ADMIN", null));
-                userService.saveRole(new Role(null, "ROLE_CASHIER", null));
+                Role admin = userService.saveRole(new Role(null, "ADMIN", null));
+                userService.saveRole(new Role(null, "CASHIER", null));
 
                 userService.saveUser(new User(null, "defaultadmin", "123", "default",
                         "admin", "961111111v", "0711231231", admin));

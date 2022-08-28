@@ -2,6 +2,7 @@ package com.pms.pharmacy.system.security;
 
 import com.pms.pharmacy.system.filter.AuthenticationFilter;
 import com.pms.pharmacy.system.filter.AuthorizationFilter;
+import com.pms.pharmacy.system.utils.Constants;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -31,7 +32,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         AuthenticationFilter authenticationFilter = new AuthenticationFilter(authenticationManagerBean());
-        authenticationFilter.setFilterProcessesUrl("/api/auth/login");
+        authenticationFilter.setFilterProcessesUrl(Constants.LOGIN_PATH);
 
         http.csrf().disable();
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
