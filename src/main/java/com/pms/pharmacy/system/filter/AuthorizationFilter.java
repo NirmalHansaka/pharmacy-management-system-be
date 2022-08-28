@@ -37,6 +37,9 @@ public class AuthorizationFilter extends OncePerRequestFilter {
         if(request.getServletPath().equals(Constants.LOGIN_PATH)){
             // If request is for login, do nothing
             filterChain.doFilter(request, response);
+        }else if(request.getServletPath().equals(Constants.REFRESH_TOKEN_PATH)){
+            // if request is for refresh token, do nothing
+            filterChain.doFilter(request, response);
         }else{
             String authorizationHeader = request.getHeader(AUTHORIZATION);
 
@@ -57,18 +60,13 @@ public class AuthorizationFilter extends OncePerRequestFilter {
                             new UsernamePasswordAuthenticationToken(username, null, authorities);
                     SecurityContextHolder.getContext().setAuthentication(authenticationToken);
 
-                    if(request.getServletPath().equals(Constants.REFRESH_TOKEN_PATH)) {
-                        // If request is for refresh token, do nothing
+                    // Access checking
+                    List<RoleSubModuleAction> roleSubModuleActions =
+                            roleSubModuleActionRepository.findByRoleName(role, request.getServletPath(), request.getMethod());
+                    if(roleSubModuleActions.size() > 0){
                         filterChain.doFilter(request, response);
                     }else{
-                        // Access checking
-                        List<RoleSubModuleAction> roleSubModuleActions =
-                                roleSubModuleActionRepository.findByRoleName(role, request.getServletPath(), request.getMethod());
-                        if(roleSubModuleActions.size() > 0){
-                            filterChain.doFilter(request, response);
-                        }else{
-                            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-                        }
+                        response.setStatus(HttpServletResponse.SC_FORBIDDEN);
                     }
 
                 }catch (Exception exception){
