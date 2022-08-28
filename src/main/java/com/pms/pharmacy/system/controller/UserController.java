@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
 @RestController
@@ -20,5 +22,10 @@ public class UserController {
     @GetMapping("")
     public List<User> getUsers(){
         return userService.getUsers();
+    }
+
+    @GetMapping("/refresh-token")
+    public void refreshToken(HttpServletRequest request, HttpServletResponse response){
+        userService.refreshToken(request, response);
     }
 }

@@ -6,26 +6,21 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
 import java.util.List;
 
-@Entity
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Data
-public class Role {
+@Entity
+public class Action {
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
 
-    @NotNull
     private String name;
 
-    @OneToMany(mappedBy="role")
+    @OneToMany(mappedBy="action")
     @JsonIgnore
-    private List<User> users;
-
-    @OneToMany(mappedBy="role")
-    @JsonIgnore
-    private List<RoleSubModuleAction> roleSubModuleActions;
+    private List<SubModuleAction> subModuleActions;
 }
