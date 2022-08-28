@@ -1,21 +1,24 @@
 package com.pms.pharmacy.system.controller;
 
 import com.pms.pharmacy.system.model.User;
-import com.pms.pharmacy.system.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+
+import com.pms.pharmacy.system.service.UserService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
 @RestController
+@RequiredArgsConstructor
+@RequestMapping("/api/users")
 public class UserController {
 
-    @Autowired
-    UserRepository userRepository;
+    private final UserService userService;
 
-    @RequestMapping("/users")
+    @GetMapping("")
     public List<User> getUsers(){
-        return userRepository.findAll();
+        return userService.getUsers();
     }
 }

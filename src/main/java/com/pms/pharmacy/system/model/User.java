@@ -36,10 +36,10 @@ public class User {
     @NotNull
     private String phoneNumber;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name="role_id", nullable=false)
     private Role role;
 
-    private boolean isActive = true;
-    private boolean deleted = false;
+    private final boolean isActive = true;
+    private final boolean deleted = false;
 }
