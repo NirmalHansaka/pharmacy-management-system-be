@@ -57,13 +57,18 @@ public class AuthorizationFilter extends OncePerRequestFilter {
                             new UsernamePasswordAuthenticationToken(username, null, authorities);
                     SecurityContextHolder.getContext().setAuthentication(authenticationToken);
 
-                    // Access checking
-                    List<RoleSubModuleAction> roleSubModuleActions =
-                            roleSubModuleActionRepository.findByRoleName(role, request.getServletPath(), request.getMethod());
-                    if(roleSubModuleActions.size() > 0){
+                    if(request.getServletPath().equals(Constants.REFRESH_TOKEN_PATH)) {
+                        // If request is for refresh token, do nothing
                         filterChain.doFilter(request, response);
                     }else{
-                        response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+                        // Access checking
+                        List<RoleSubModuleAction> roleSubModuleActions =
+                                roleSubModuleActionRepository.findByRoleName(role, request.getServletPath(), request.getMethod());
+                        if(roleSubModuleActions.size() > 0){
+                            filterChain.doFilter(request, response);
+                        }else{
+                            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+                        }
                     }
 
                 }catch (Exception exception){
