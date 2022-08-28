@@ -2,6 +2,7 @@ package com.pms.pharmacy.system.security;
 
 import com.pms.pharmacy.system.filter.AuthenticationFilter;
 import com.pms.pharmacy.system.filter.AuthorizationFilter;
+import com.pms.pharmacy.system.repository.RoleSubModuleActionRepository;
 import com.pms.pharmacy.system.utils.Constants;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -23,6 +24,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final UserDetailsService userDetailsService;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
+    private final RoleSubModuleActionRepository roleSubModuleActionRepository;
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
@@ -38,7 +40,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
         http.authorizeRequests().anyRequest().authenticated();
         http.addFilter(authenticationFilter);
-        http.addFilterBefore(new AuthorizationFilter(), UsernamePasswordAuthenticationFilter.class);
+        http.addFilterBefore(new AuthorizationFilter(roleSubModuleActionRepository), UsernamePasswordAuthenticationFilter.class);
     }
 
     @Bean

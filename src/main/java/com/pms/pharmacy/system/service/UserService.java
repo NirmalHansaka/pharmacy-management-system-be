@@ -1,10 +1,11 @@
 package com.pms.pharmacy.system.service;
 
-import com.pms.pharmacy.system.model.Role;
-import com.pms.pharmacy.system.model.User;
-import com.pms.pharmacy.system.repository.RoleRepository;
-import com.pms.pharmacy.system.repository.UserRepository;
+import com.pms.pharmacy.system.model.*;
+import com.pms.pharmacy.system.model.Module;
+import com.pms.pharmacy.system.repository.*;
+import com.pms.pharmacy.system.utils.Constants;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -23,6 +24,11 @@ public class UserService implements UserDetailsService {
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
+    private final RoleSubModuleActionRepository roleSubModuleActionRepository;
+    private final ActionRepository actionRepository;
+    private final ModuleRepository moduleRepository;
+    private final SubModuleRepository subModuleRepository;
+    private final SubModuleActionRepository subModuleActionRepository;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -51,5 +57,51 @@ public class UserService implements UserDetailsService {
     public void saveUser(User user){
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         userRepository.saveAndFlush(user);
+    }
+
+    public void initUserData(){
+
+        long userCount = userRepository.count();
+
+        if(userCount == 0){
+
+            // save default admin and roles
+            Role admin = saveRole(new Role(null, "ADMIN", null, null));
+            saveRole(new Role(null, "CASHIER", null, null));
+
+            saveUser(new User(null, "defaultadmin", "123", "default",
+                    "admin", "961111111v", "0711231231", admin));
+
+            // Save Admin default privileges with modules
+            Module userManagement = new Module(null, "User Management", null);
+            SubModule user = new SubModule(null, "User", userManagement, null);
+
+            Action view = new Action(null, Constants.VIEW, null);
+            Action add = new Action(null, Constants.ADD, null);
+            Action update = new Action(null, Constants.UPDATE, null);
+            Action delete = new Action(null, Constants.DELETE, null);
+
+            SubModuleAction userView = new SubModuleAction(null, "/api/users", HttpMethod.GET.name(), user, view, null);
+            SubModuleAction userAdd = new SubModuleAction(null, "/api/users", HttpMethod.POST.name(), user, add, null);
+            SubModuleAction userUpdate = new SubModuleAction(null, "/api/users", HttpMethod.PUT.name(), user, update, null);
+            SubModuleAction userDelete = new SubModuleAction(null, "/api/users", HttpMethod.DELETE.name(), user, delete, null);
+
+            RoleSubModuleAction adminUserView = new RoleSubModuleAction(null, userView, admin);
+            RoleSubModuleAction adminUserAdd = new RoleSubModuleAction(null, userAdd, admin);
+            RoleSubModuleAction adminUserUpdate = new RoleSubModuleAction(null, userUpdate, admin);
+            RoleSubModuleAction adminUserDelete = new RoleSubModuleAction(null, userDelete, admin);
+
+            List<RoleSubModuleAction> roleSubModuleActions = List.of(adminUserView, adminUserAdd, adminUserUpdate, adminUserDelete);
+
+            moduleRepository.save(userManagement);
+            subModuleRepository.save(user);
+
+            for (RoleSubModuleAction roleSubModuleAction: roleSubModuleActions) {
+                actionRepository.save(roleSubModuleAction.getSubModuleAction().getAction());
+                subModuleActionRepository.save(roleSubModuleAction.getSubModuleAction());
+                roleSubModuleActionRepository.save(roleSubModuleAction);
+            }
+        }
+
     }
 }
