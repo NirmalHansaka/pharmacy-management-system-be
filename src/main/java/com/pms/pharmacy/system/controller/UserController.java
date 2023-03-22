@@ -1,11 +1,11 @@
 package com.pms.pharmacy.system.controller;
 
+import com.pms.pharmacy.system.model.Role;
 import com.pms.pharmacy.system.model.User;
 
 import com.pms.pharmacy.system.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -17,10 +17,26 @@ public class UserController {
 
 
 
-    @RequestMapping("/users")
+    @RequestMapping("/GetUsers")
     public List<User> getUsers(){
 
         return userService.getUsers();
 
     }
+
+    @PostMapping("/addUser")
+    public User addRole(@RequestBody User user){
+        return userService.saveUser(user);
+    }
+
+    @PutMapping("/updateUser")
+    public User updateUser(@RequestBody User user){
+        return userService.updateUser(user);
+    }
+
+    @DeleteMapping("/deleteUser")
+    public String deleteUser(@RequestBody Integer id){
+         return userService.deleteUser(id);
+    }
+
 }
