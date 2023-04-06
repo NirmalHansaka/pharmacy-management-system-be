@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
+
 public class UserController {
 
     @Autowired
@@ -17,7 +18,7 @@ public class UserController {
 
 
 
-    @RequestMapping("/GetUsers")
+    @GetMapping("/GetUsers")
     public List<User> getUsers(){
 
         return userService.getUsers();

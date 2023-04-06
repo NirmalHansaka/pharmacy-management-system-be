@@ -3,6 +3,7 @@ package com.pms.pharmacy.system.service;
 import com.pms.pharmacy.system.model.User;
 import com.pms.pharmacy.system.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -15,6 +16,9 @@ public class UserService {
     @Autowired
     UserRepository userRepository;
 
+    @Autowired
+    PasswordEncoder passwordEncoder;
+
 
     public List<User> getUsers(){
         return userRepository.findAllByIsActiveAndDeleted(true, false);
@@ -22,6 +26,8 @@ public class UserService {
 
 
     public User saveUser(User user){
+
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
         return userRepository.save(user);
     }
 
